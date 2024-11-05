@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1730725157059,
-      "tag": "0000_fair_warpath",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1730725321780,
-      "tag": "0001_lowly_scarlet_spider",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1730725600693,
-      "tag": "0002_boring_wendell_vaughn",
+      "when": 1730813923665,
+      "tag": "0000_amused_blacklash",
       "breakpoints": true
     }
   ]
