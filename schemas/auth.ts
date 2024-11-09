@@ -4,7 +4,7 @@ export const SignUpSchema = z.object({
   name: z
     .string()
     .min(1, { message: "이름을 입력해주세요." })
-    .regex(/^[a-zA-Zᄀ-ᄒ가-힣]+$/, {
+    .regex(/^[a-zA-Zᄀ-ᄒ가-힣]+$/, {
       message: "이름은 문자만 입력할 수 있습니다.",
     }),
   email: z.string().email({ message: "올바른 이메일 형식을 입력해주세요." }),
