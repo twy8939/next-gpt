@@ -1,5 +1,5 @@
 {
-  "id": "911e28ad-cddd-44b9-8d8a-3c0fe326e5c5",
+  "id": "9c76a3a8-f978-4971-9fbc-a13dffae9ff5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -44,10 +44,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "conversation_userId_users_id_fk": {
-          "name": "conversation_userId_users_id_fk",
+        "conversation_userId_user_id_fk": {
+          "name": "conversation_userId_user_id_fk",
           "tableFrom": "conversation",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": [
             "userId"
           ],
@@ -130,8 +130,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.users": {
-      "name": "users",
+    "public.user": {
+      "name": "user",
       "schema": "",
       "columns": {
         "id": {

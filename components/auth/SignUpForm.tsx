@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, useActionState } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import FormCard from "./FormCard";
@@ -9,8 +9,10 @@ import useFormValidate from "@/hooks/useFormValidate";
 import { SignUpSchema } from "@/schemas/auth";
 import { TSignUpFormError } from "@/types/form";
 import { FormMessage } from "./FormMessage";
+import { signUp } from "@/actions/signup";
 
 export default function SignUpForm() {
+  const [error, action] = useActionState(signUp, undefined);
   const { errors, validateField } =
     useFormValidate<TSignUpFormError>(SignUpSchema);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +25,7 @@ export default function SignUpForm() {
       title="회원가입"
       footer={{ label: "이미 계정이 있으신가요?", href: "/login" }}
     >
-      <form className="space-y-4">
+      <form action={action} className="space-y-4">
         {/* 이름 */}
         <div className="space-y-1">
           <Label htmlFor="name">이름</Label>
