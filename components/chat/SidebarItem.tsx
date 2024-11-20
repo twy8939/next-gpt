@@ -32,6 +32,7 @@ export default function SidebarItem({ item }: Props) {
   return (
     <Link
       href={href}
+      scroll={false}
       className={cn(
         "flex items-center justify-between p-3 text-sm rounded-lg group hover:text-white hover:bg-white/10",
         isMenuOpen || pathname === href

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Empty from "./Empty";
 import Message from "./Message";
 import AutoResizingTextarea from "./AutoResizingTextarea";
@@ -14,6 +14,13 @@ const MESSAGE_DUMMY = [
 
 export default function Chat() {
   const [value, setValue] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  });
   return (
     <div className="flex flex-col w-[80%] h-full mx-auto">
       {/* 채팅 영역 */}
@@ -29,7 +36,7 @@ export default function Chat() {
         )}
       </div>
       {/* input 영역 */}
-      <div className="pb-5">
+      <div className="sticky bottom-0 pb-5 bg-white">
         <form className="flex items-center justify-center gap-4">
           <AutoResizingTextarea
             value={value}
@@ -40,6 +47,7 @@ export default function Chat() {
           </Button>
         </form>
       </div>
+      <div ref={scrollRef} />
     </div>
   );
 }
