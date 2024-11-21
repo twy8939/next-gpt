@@ -5,7 +5,7 @@ import { BASE_URL, CHAT_ROUTES } from "@/constants/routes";
 import SidebarItem from "./SidebarItem";
 import LogoutButton from "./LogoutButton";
 
-const DUMMY_ITEMS = [
+export const DUMMY_ITEMS = [
   {
     id: "new",
     label: "새로운 대화",
