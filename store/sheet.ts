@@ -9,7 +9,7 @@ type Action = {
 };
 
 const useSheetStore = create<State & Action>((set) => ({
-  open: true,
+  open: false,
   setOpen: (open) => set(() => ({ open })),
 }));
 
