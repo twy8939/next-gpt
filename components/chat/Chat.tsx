@@ -6,37 +6,52 @@ import Message from "./Message";
 import AutoResizingTextarea from "./AutoResizingTextarea";
 import { Button } from "../ui/button";
 import { ArrowUp } from "lucide-react";
-import { useChat } from "ai/react";
+import { Message as TMessage, useChat } from "ai/react";
 import { useModelStore } from "@/store/model";
 import { useParams, useRouter } from "next/navigation";
 import { addMessages, createConversation } from "@/actions/conversation";
 import { CHAT_ROUTES } from "@/constants/routes";
 
-export default function Chat() {
+type Props = {
+  initialMessages?: TMessage[];
+};
+export default function Chat({ initialMessages }: Props) {
   const router = useRouter();
   const params = useParams<{ conversationId: string }>();
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    onFinish: async (message) => {
-      if (!params.conversationId) {
-        // 새로운 대화 페이지
-        // 1. create conversation
-        const conversation = await createConversation(input);
-        // 2. add messages
-        await addMessages({
-          conversationId: conversation.id,
-          userContent: input,
-          assistantContent: message.content,
-        });
+  const { messages, setMessages, input, handleInputChange, handleSubmit } =
+    useChat({
+      onFinish: async (message) => {
+        if (!params.conversationId) {
+          // 새로운 대화 페이지
+          // 1. create conversation
+          const conversation = await createConversation(input);
+          // 2. add messages
+          await addMessages({
+            conversationId: conversation.id,
+            userContent: input,
+            assistantContent: message.content,
+          });
 
-        router.push(`${CHAT_ROUTES.CONVERSATIONS}/${conversation.id}`);
-      } else {
-        // 기존 대화 페이지
-        // 1. add messages
-      }
-    },
-  });
+          router.push(`${CHAT_ROUTES.CONVERSATIONS}/${conversation.id}`);
+        } else {
+          // 기존 대화 페이지
+          // 1. add messages
+          await addMessages({
+            conversationId: params.conversationId,
+            userContent: input,
+            assistantContent: message.content,
+          });
+        }
+      },
+    });
   const model = useModelStore((store) => store.model);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initialMessages) {
+      setMessages(initialMessages);
+    }
+  }, [initialMessages, setMessages]);
 
   useEffect(() => {
     if (scrollRef.current) {
