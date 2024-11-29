@@ -26,7 +26,20 @@ export default function SidebarItem({ item }: Props) {
   const { id, label, href, icon } = item;
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [value, setValue] = useState("");
   const setOpen = useSheetStore((state) => state.setOpen);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
+
+  const clickEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    setIsEditMode(true);
+    setIsMenuOpen(false);
+  };
 
   const handleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -44,7 +57,17 @@ export default function SidebarItem({ item }: Props) {
       onClick={() => setOpen(false)}
     >
       <div className="flex items-center gap-2">
-        {icon} <div className="truncate w-[180px]">{label}</div>
+        {icon}{" "}
+        {isEditMode ? (
+          <input
+            className="px-2 py-1 bg-transparent border rounded-lg border-zinc-400"
+            value={value}
+            onClick={(e) => e.stopPropagation()}
+            onChange={handleChange}
+          />
+        ) : (
+          <div className="truncate w-[180px]">{label}</div>
+        )}
       </div>
       {id !== "new" && (
         <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
@@ -59,7 +82,7 @@ export default function SidebarItem({ item }: Props) {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem className="gap-2">
+            <DropdownMenuItem className="gap-2" onClick={(e) => clickEdit(e)}>
               <Pencil size={10} />
               Edit
             </DropdownMenuItem>
