@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,8 @@ import { Ellipsis, Pencil, Trash } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useSheetStore } from "@/store/sheet";
+import { updateConversation } from "@/actions/conversation";
+import toast from "react-hot-toast";
 
 type Props = {
   item: {
@@ -30,6 +32,8 @@ export default function SidebarItem({ item }: Props) {
   const [value, setValue] = useState("");
   const setOpen = useSheetStore((state) => state.setOpen);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
@@ -44,6 +48,30 @@ export default function SidebarItem({ item }: Props) {
   const handleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleBlur();
+    }
+  };
+
+  const handleBlur = async () => {
+    setIsEditMode(false);
+    if (value !== label) {
+      await updateConversation(id, value);
+      try {
+      } catch (error) {
+        console.error(error);
+        toast.error("이름 수정에 실패하였습니다.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isEditMode && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditMode]);
   return (
     <Link
       href={href}
@@ -64,6 +92,9 @@ export default function SidebarItem({ item }: Props) {
             value={value}
             onClick={(e) => e.stopPropagation()}
             onChange={handleChange}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            ref={inputRef}
           />
         ) : (
           <div className="truncate w-[180px]">{label}</div>
