@@ -9,11 +9,14 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Ellipsis, Pencil, Trash } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useSheetStore } from "@/store/sheet";
-import { updateConversation } from "@/actions/conversation";
+import { deleteConversation, updateConversation } from "@/actions/conversation";
 import toast from "react-hot-toast";
+import { useModalState } from "@/store/modal";
+import ModalFooter from "../modal/ModalFooter";
+import { BASE_URL } from "@/constants/routes";
 
 type Props = {
   item: {
@@ -27,9 +30,15 @@ type Props = {
 export default function SidebarItem({ item }: Props) {
   const { id, label, href, icon } = item;
   const pathname = usePathname();
+  const params = useParams<{ conversationId: string }>();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [value, setValue] = useState("");
+  const [openModal, closeModal] = useModalState((state) => [
+    state.openModal,
+    state.closeModal,
+  ]);
   const setOpen = useSheetStore((state) => state.setOpen);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,6 +74,33 @@ export default function SidebarItem({ item }: Props) {
         toast.error("이름 수정에 실패하였습니다.");
       }
     }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteConversation(id);
+
+      toast.success("삭제에 성공하였습니다.");
+
+      if (params.conversationId === id) {
+        router.push(BASE_URL);
+      }
+
+      closeModal();
+    } catch (error) {
+      console.error(error);
+      toast.error("삭제에 실패하였습니다.");
+    }
+  };
+
+  const clickDelete = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    openModal({
+      title: "정말 삭제하시겠습니까?",
+      description: "삭제 후 데이터는 복구하기 어려울 수 있씁니다.",
+      footer: <ModalFooter onConfirm={handleDelete} onCancel={closeModal} />,
+    });
   };
 
   useEffect(() => {
@@ -118,7 +154,7 @@ export default function SidebarItem({ item }: Props) {
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem className="gap-2">
-              <Trash size={10} />
+              <Trash size={10} onClick={(e) => clickDelete(e)} />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
