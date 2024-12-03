@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useActionState } from "react";
+import { ChangeEvent, useActionState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import FormCard from "./FormCard";
@@ -10,6 +10,7 @@ import { FormMessage } from "./FormMessage";
 import { TLoginFormError } from "@/types/form";
 import { LoginSchema } from "@/schemas/auth";
 import { login } from "@/actions/login";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
   const [error, action] = useActionState(login, undefined);
@@ -19,6 +20,12 @@ export default function LoginForm() {
     const { name, value } = event.target;
     validateField(name, value);
   };
+
+  useEffect(() => {
+    if (error?.errorMessage) {
+      toast.error(error.errorMessage);
+    }
+  }, [error]);
 
   return (
     <FormCard

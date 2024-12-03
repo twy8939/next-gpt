@@ -153,8 +153,8 @@ export default function SidebarItem({ item }: Props) {
               <Pencil size={10} />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2">
-              <Trash size={10} onClick={(e) => clickDelete(e)} />
+            <DropdownMenuItem className="gap-2" onClick={(e) => clickDelete(e)}>
+              <Trash size={10} />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
